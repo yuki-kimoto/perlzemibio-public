@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="/css/common.css">
 
 <title>Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</title>
-<meta name="description" content="How to use Giblog.">
+<meta name="description" content="Perlで学ぶ分子生物学・バイオインフォマティクス入門です。高速処理に対応します。">
   </head>
   <body>
     <div class="container">
@@ -31,93 +31,45 @@
   <div class="middle">
     <h2><a href="/">Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</a></h2>
 <p>
-  How to use Giblog.
+  Perlで学ぶ分子生物学・バイオインフォマティクス入門です。高速処理に対応します。
 </p>
-<h3>Create web site</h3>
+<h3>PerlにおけるBio Perlの課題はパフォーマンス</h3>
 <p>
-  Create web site by new command.
+  PerlにおけるBio Perlの課題は、Perlのパフォーマンスです。Perlは、文字列処理が得意な反面、ループやバイト列処理が遅いという問題があります。正規表現で、検索や置換をするのは、C言語の世界でできるので、速いのですが、ループでバイト処理が必要な局面になると、途端にパフォーマンスに影響を及ぼします。
 </p>
-<pre>
-giblog new mysite
-</pre>
 <p>
-  Other prototypes is also available.
+  Perlで書かれたBio Perlのライブラリは、Perl自体のパフォーマンスの影響を、そのまま受けます。
 </p>
-<pre>
-giblog new_website mysite
-giblog new_blog mysite
-</pre>
+<h3>PerlよりもPythonのnumpyを基盤にしたライブラリが好まれる理由</h3>
 <p>
-  After creating web site, change directory to mysite
+  Pythonのnumpyは、集合演算ライブラリです。集合演算に関しては、C/C++で書かれているので、パフォーマンスが速いです。またライブラリなので、関数として多数の機能が提供されます。numpyは、集合演算ライブラリのデファクトスタンダードです。
 </p>
-<pre>
-cd mysite
-</pre>
-<h3>Add new entry</h3>
 <p>
-  Add new entry by add command.
+  また結果をグラフ化して、視覚化するライブラリもnumpyの上に構成されています。
 </p>
-<pre>
-giblog add
-</pre>
-<h3>Build</h3>
+<h3>pythonのnumpyに課題はないのか?</h3>
 <p>
-  Build web site.
+  pythonのnumpyに課題はないのでしょうか? 実際は、課題は存在します。
 </p>
-<pre>
-giblog build
-</pre>
 <p>
-  If you want to customize build process, you open lib/Giblog/Command/Build.pm and edit run subroutine.
+  それは、個別の要素の計算のパフォーマンスです。集合演算はC/C++の世界で行われる一方、個別の要素の計算はpythonの世界で行わなければならないからです。
 </p>
-<h3>Serve</h3>
 <p>
-  You can serve your web site by morbo command if you have Mojolicious.
+  この課題が存在するための、NumbaやCythonを使いたいという動機が発生します。
 </p>
-<pre>
-morbo serve.pl
-</pre>
 <p>
-  build command is automatically executed after editting files in templates directory.
+  すべてを集合演算ですべきという理想がある一方で、現実は、個別の要素の数値計算を速くしたいという要望があります。
 </p>
-<h3>Examples</h3>
+<h3>私たちの目標はなにか?</h3>
 <p>
-  Some examples.
+  私たちの目標は、Perlに集合演算を高速に行うためのデータ構造を追加し、このデータ構造を操作できるPerlに極めて近いプログラミング言語を実装し、C言語のパフォーマンスを生み出すことです。また、C言語で書いた処理を、簡単に呼び出せることです。
 </p>
-<blockquote>
-  This is a quote.
-</blockquote>
-<div>
-  Hello
-</div>
-<h4>Sub header</h4>
-<pre>
-&lt;&gt;&lt;&gt;&lt;&gt;
-</pre>
-<pre>
-1 &gt; 2;
-1 &lt; 3;
-1 &amp; 3;
-</pre>
-<ul>
-  <li>Item1</li>
-  <li>Item2</li>
-  <li>Item3</li>
-</ul>
-<table>
-  <tr>
-    <th>Head1</th><th>Head2</th>
-  </tr>
-  <tr>
-    <td>Item1</td><td>Item2</td>
-  </tr>
-</table>
 <p>
-  <a href="https://github.com/yuki-kimoto/giblog">Giblog</a>
+  そして、この上に、Perlから呼び出せCPANにリリース可能な、バイオインフォマティクスのライブラリを構成することです。
 </p>
-<div>
-  <img src="/images/giblog-logo.png">
-</div>
+<p>
+  この目標を意識しつつ、バイオインフォマティクス入門を書いていきます。
+</p>
 
   </div>
   <div class="bottom">
