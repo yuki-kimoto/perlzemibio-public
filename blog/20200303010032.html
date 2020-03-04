@@ -22,8 +22,8 @@
   });
 </script>
 
-<title>Hello Giblog 5 - Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</title>
-<meta name="description" content="Hello Giblog 5.">
+<title>塩基配列の長さを取得 - Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</title>
+<meta name="description" content="塩基配列の長さを取得するにはlength文を使用します。">
   </head>
   <body>
     <div class="container">
@@ -44,10 +44,39 @@
 
   </div>
   <div class="middle">
-    <h2><a href="/blog/20190316121234.html">Hello Giblog 5</a></h2>
+    <h2><a href="/blog/20200303010032.html">塩基配列の長さを取得</a></h2>
 <p>
-  Hello Giblog 5.
+  塩基配列の長さを取得するにはlength文を使用します。
 </p>
+<pre>
+length 文字列互換型;
+</pre>
+<p>
+  塩基配列から、文字列の長さを取り出すサンプルです。
+</p>
+<pre>
+my $sequence = "ATGCAGCCC";
+my $length = length $sequence;
+</pre>
+<h3>塩基配列の長さを取得するPerlから呼び出すサンプル</h3>
+<pre>
+# CountSequence.spvm
+package CountSequence {
+  sub count : int ($sequence : string) {
+    return length $sequence;
+  }
+}
+</pre>
+<pre>
+use strict;
+use warnings;
+use SPVM "CountSequence";
+
+my $sequence = "ATGCAGCCC";
+print CountSequence-&gt;count($sequence), "\n";
+# Output
+# 9
+</pre>
 
   </div>
   <div class="bottom">
