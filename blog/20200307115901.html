@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- meta -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/images/giblog-logo.png">
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+  });
+</script>
+
+<title>塩基配列からA,G,C,Tそれぞれの割合とGC含量を求める - Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</title>
+<meta name="description" content="塩基配列からA,G,C,Tそれぞれの割合とGC含量を求めてみましょう。">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <!-- header -->
+<div class="main">
+  <h1>
+    <a href="/">Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</a>
+  </h1>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="content">
+          <div class="entry">
+  <div class="top">
+    <!-- top -->
+
+  </div>
+  <div class="middle">
+    <h2><a href="/blog/20200307115901.html">塩基配列からA,G,C,Tそれぞれの割合とGC含量を求める</a></h2>
+<p>
+  塩基配列からA,G,C,Tそれぞれの割合とGC含量を求めてみましょう。
+</p>
+<h3>塩基配列からA,G,C,Tそれぞれの割合とGC含量を求める(Perl)</h3>
+<p>
+  塩基配列からA,G,C,Tそれぞれの割合とGC含量をPerlのプログラムで求めてみましょう。
+</p>
+<pre>
+use strict;
+use warnings;
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+my $length = length $sequence;
+
+my $adenine_count  = 0;
+my $guanine_count  = 0;
+my $cytosine_count = 0;
+my $thymine_count  = 0;
+
+while ($sequence =~ /(.)/g) {
+  my $char = $1;
+  if ($char eq 'A') {
+    $adenine_count++;
+  }
+  elsif ($char eq 'G') {
+    $guanine_count++;
+  }
+  elsif ($char eq 'C') {
+    $cytosine_count++;
+  }
+  elsif ($char eq 'T') {
+    $thymine_count++;
+  }
+}
+
+my $adenine_percent  = $adenine_count  / $length * 100;
+my $guanine_percent  = $guanine_count  / $length * 100;
+my $cytosine_percent = $cytosine_count / $length * 100;
+my $thymine_percent  = $thymine_count  / $length * 100;
+
+my $gc_content = ($guanine_count + $cytosine_count) / $length * 100;
+
+print "Percentage of A: $adenine_percent%\n";
+print "Percentage of G: $guanine_percent%\n";
+print "Percentage of C: $cytosine_percent%\n";
+print "Percentage of T: $thymine_percent%\n";
+
+print "GC content: $gc_content%\n";
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+Percentage of A: 15.7894736842105%
+Percentage of G: 26.3157894736842%
+Percentage of C: 42.1052631578947%
+Percentage of T: 15.7894736842105%
+GCcontent: 68.4210526315789%
+</pre>
+<h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(SPVM)</h3>
+<p>
+  塩基配列からA,G,C,Tそれぞれの割合とGC含量をSPVMのプログラムで求めてみましょう。
+</p>
+<pre>
+package Sequence {
+  sub run : void () {
+    my $sequence = "ATGCAGCCCCGGGTACTCC";
+    my $length = length $sequence;
+
+    my $adenine_count  = 0;
+    my $guanine_count  = 0;
+    my $cytosine_count = 0;
+    my $thymine_count  = 0;
+
+    for (my $i = 0; $i &lt; $length; ++$i) {
+      my $char = $sequence-&gt;[$i];
+      if ($char == 'A') {
+        $adenine_count++;
+      }
+      elsif ($char == 'G') {
+        $guanine_count++;
+      }
+      elsif ($char == 'C') {
+        $cytosine_count++;
+      }
+      elsif ($char == 'T') {
+        $thymine_count++;
+      }
+    }
+
+    my $adenine_percent  = 100.0 * $adenine_count  / $length;
+    my $guanine_percent  = 100.0 * $guanine_count  / $length;
+    my $cytosine_percent = 100.0 * $cytosine_count / $length;
+    my $thymine_percent  = 100.0 * $thymine_count  / $length;
+
+    my $gc_content = 100.0 * ($guanine_count + $cytosine_count) / $length;
+
+    print "Percentage of A: $adenine_percent%\n";
+    print "Percentage of G: $guanine_percent%\n";
+    print "Percentage of C: $cytosine_percent%\n";
+    print "Percentage of T: $thymine_percent%\n";
+
+    print "GC content: $gc_content%\n";
+  }
+}
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+$ perl -I. -e 'use SPVM "Sequence"; Sequence-&gt;run;'
+Percentage of A: 15.7895%
+Percentage of G: 26.3158%
+Percentage of C: 42.1053%
+Percentage of T: 15.7895%
+GC content: 68.4211%
+</pre>
+<h3>塩基配列からA,G,C,Tそれぞれの割合を求める。GC含量を求める。(PerlからSPVM)</h3>
+<p>
+  塩基配列からA,G,C,Tそれぞれの割合とGC含量をSPVMのプログラムで求めて、Perlから呼び出してみましょう。
+</p>
+<pre>
+# Sequence.spvm
+package Sequence {
+  sub percentages : double[] ($sequence : string) {
+    my $length = length $sequence;
+
+    my $adenine_count  = 0;
+    my $guanine_count  = 0;
+    my $cytosine_count = 0;
+    my $thymine_count  = 0;
+
+    for (my $i = 0; $i &lt; $length; ++$i) {
+      my $char = $sequence-&gt;[$i];
+      if ($char == 'A') {
+        $adenine_count++;
+      }
+      elsif ($char == 'G') {
+        $guanine_count++;
+      }
+      elsif ($char == 'C') {
+        $cytosine_count++;
+      }
+      elsif ($char == 'T') {
+        $thymine_count++;
+      }
+    }
+
+    my $adenine_percent  = 100.0 * $adenine_count  / $length;
+    my $guanine_percent  = 100.0 * $guanine_count  / $length;
+    my $cytosine_percent = 100.0 * $cytosine_count / $length;
+    my $thymine_percent  = 100.0 * $thymine_count  / $length;
+
+    my $gc_content = 100.0 * ($guanine_count + $cytosine_count) / $length;
+
+    return [$adenine_percent, $guanine_percent, $cytosine_percent, $thymine_percent, $gc_content];
+  }
+}
+</pre>
+<pre>
+# sequence.pl
+use strict;
+use warnings;
+use SPVM 'Sequence';
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+
+my $spvm_array = Sequence-&gt;percentages($sequence);
+my $percentages_ref = $spvm_array-&gt;to_elems;
+
+my $adenine_percent  = $percentages_ref-&gt;[0];
+my $guanine_percent  = $percentages_ref-&gt;[1];
+my $cytosine_percent = $percentages_ref-&gt;[2];
+my $thymine_percent  = $percentages_ref-&gt;[3];
+
+my $gc_content = $percentages_ref-&gt;[4];
+
+print "Percentage of A: $adenine_percent%\n";
+print "Percentage of G: $guanine_percent%\n";
+print "Percentage of C: $cytosine_percent%\n";
+print "Percentage of T: $thymine_percent%\n";
+
+print "GC content: $gc_content%\n";
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+$ perl -I. sequence.pl
+Percentage of A: 15.7894736842105%
+Percentage of G: 26.3157894736842%
+Percentage of C: 42.1052631578947%
+Percentage of T: 15.7894736842105%
+GC content: 68.4210526315789%
+</pre>
+
+  </div>
+  <div class="bottom">
+    <!-- bottom -->
+
+  </div>
+</div>
+
+        </div>
+        <div class="side">
+          <!-- side -->
+<div class="side-list">
+  <div class="side-list-title">
+    Side Bar
+  </div>
+  <ul>
+    <li><a href="/list.html">Entries</a></li>
+    <li>Bar</li>
+    <li>Baz</li>
+  </ul>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+<a href="https://github.com/yuki-kimoto/giblog">Giblog</a>
+
+      </div>
+    </div>
+  </body>
+</html>
