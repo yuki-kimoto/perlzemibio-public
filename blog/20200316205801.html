@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- meta -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/images/giblog-logo.png">
+<link rel="stylesheet" type="text/css" href="/css/common.css">
+<script type="text/javascript" src="/js/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="/js/google-code-prettify/prettify.js"></script>
+<link  type="text/css" rel="stylesheet" href="/js/google-code-prettify/prettify.css"/>
+
+<script>
+  $(function(){
+    // google code prettifyの有効化
+    $("pre").addClass("prettyprint");
+    function init(event){
+      prettyPrint();
+    }
+    if(window.addEventListener)window.addEventListener("load",init,false);
+    else if(window.attachEvent)window.attachEvent("onload",init);
+  });
+</script>
+
+<title>塩基配列を逆相補鎖に変換する - Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</title>
+<meta name="description" content="塩基配列から逆相補鎖を求めてみましょう。">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <!-- header -->
+<div class="main">
+  <h1>
+    <a href="/">Perlで学ぶ分子生物学・バイオインフォマティクス入門 高速処理対応</a>
+  </h1>
+</div>
+
+      </div>
+      <div class="main">
+        <div class="content">
+          <div class="entry">
+  <div class="top">
+    <!-- top -->
+
+  </div>
+  <div class="middle">
+    <h2><a href="/blog/20200316205801.html">塩基配列を逆相補鎖に変換する</a></h2>
+<p>
+  塩基配列から逆相補鎖を求めてみましょう。
+</p>
+<h3>塩基配列を逆相補鎖に変換する(Perl)</h3>
+<p>
+  塩基配列から逆相補鎖をPerlのプログラムで求めてみましょう。
+</p>
+<pre>
+use strict;
+use warnings;
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+my $length = length $sequence;
+
+my $result = '';
+while ($sequence =~ /(.)/g) {
+  my $char = $1;
+  my $complement;
+  if ($char eq 'A') { $complement = 'T'; }
+  if ($char eq 'G') { $complement = 'C'; }
+  if ($char eq 'C') { $complement = 'G'; }
+  if ($char eq 'T') { $complement = 'A'; }
+  $result = "$complement$result";
+}
+
+print "$result\n";
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+GGAGTACCCGGGGCTGCAT
+</pre>
+<h3>塩基配列を逆相補鎖に変換する(SPVM)</h3>
+<p>
+  塩基配列から逆相補鎖をSPVMのプログラムで求めてみましょう。
+</p>
+<pre>
+package Sequence {
+  sub run : void () {
+    my $sequence = "ATGCAGCCCCGGGTACTCC";
+    my $length = length $sequence;
+
+    my $reverse_complement = new byte[$length];
+    for (my $i = 0; $i &lt; $length; ++$i) {
+      my $char = $sequence-&gt;[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement-&gt;[$length - $i - 1] = $complement;
+    }
+    print((string)$reverse_complement . "\n");
+  }
+}
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+$ perl -I. -e 'use SPVM "Sequence"; Sequence-&gt;run;'
+GGAGTACCCGGGGCTGCAT
+</pre>
+<h3>塩基配列を逆相補鎖に変換する(PerlからSPVM)</h3>
+<p>
+  塩基配列から逆相補鎖をSPVMのプログラムで求めて、Perlから呼び出してみましょう。
+</p>
+<pre>
+# Sequence.spvm
+package Sequence {
+  sub reverse_complement : string ($sequence : string) {
+    my $length = length $sequence;
+
+    my $reverse_complement = new byte[$length];
+    for (my $i = 0; $i &lt; $length; ++$i) {
+      my $char = $sequence-&gt;[$i];
+      my $complement : byte;
+      if ($char == 'A') { $complement = 'T'; }
+      if ($char == 'G') { $complement = 'C'; }
+      if ($char == 'C') { $complement = 'G'; }
+      if ($char == 'T') { $complement = 'A'; }
+      $reverse_complement-&gt;[$length - $i - 1] = $complement;
+    }
+
+    my $result = (string)$reverse_complement;
+
+    return $result;
+  }
+}
+</pre>
+<pre>
+# make_complement.pl
+use strict;
+use warnings;
+use SPVM 'Sequence';
+
+my $sequence = 'ATGCAGCCCCGGGTACTCC';
+my $result = Sequence-&gt;reverse_complement($sequence);
+
+print "$result\n";
+</pre>
+<p>
+  出力結果。
+</p>
+<pre>
+$ perl -I. make_complement.pl
+GGAGTACCCGGGGCTGCAT
+</pre>
+
+  </div>
+  <div class="bottom">
+    <!-- bottom -->
+
+  </div>
+</div>
+
+        </div>
+        <div class="side">
+          <!-- side -->
+<div class="side-list">
+  <div class="side-list-title">
+    Side Bar
+  </div>
+  <ul>
+    <li><a href="/list.html">Entries</a></li>
+    <li>Bar</li>
+    <li>Baz</li>
+  </ul>
+</div>
+
+        </div>
+      </div>
+      <div class="footer">
+        <!-- footer -->
+<a href="https://github.com/yuki-kimoto/giblog">Giblog</a>
+
+      </div>
+    </div>
+  </body>
+</html>
